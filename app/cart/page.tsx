@@ -4,7 +4,7 @@ export default async function CartPage() {
   const { data } = await supabase.from("cart_items").select(`
     id,
     quantity,
-    product:products (
+    product:products!inner (
       name,
       price
     )
@@ -16,7 +16,8 @@ export default async function CartPage() {
 
       <ul>
         {data?.map((item) => {
-          const product = item.product?.[0];
+          const product = Array.isArray(item.product) ? item.product[0] : item.product;
+          
           return (
             <li key={item.id}>
               {product?.name ?? "Okänd produkt"} – {item.quantity} st
